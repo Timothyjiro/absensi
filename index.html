@@ -189,14 +189,16 @@
                         <option>Maret 2025</option>
                     </select>
                 </div>
-                <div id="donut-chart"></div>
+                <div class="w-full">
+                    <div id="donut-chart"></div>
+                </div>
             </div>
         </div>
 
         <!-- BOTTOM NAVBAR -->
         <div class="fixed max-w-md mx-auto bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-100 z-50 py-2">
             <nav class="flex justify-around">
-                <a href="index.html" class="flex flex-col items-center py-1 px-2 text-xs active-nav">
+                <a href="referensi.html" class="flex flex-col items-center py-1 px-2 text-xs active-nav">
                     <i class="fas fa-home text-xl mb-1"></i>
                     <span>Beranda</span>
                 </a>
@@ -261,7 +263,7 @@
                     enabled: false,
                 },
                 legend: {
-                    position: "bottom",
+                    
                     fontSize: '14px',
                     markers: {
                         width: 8,
@@ -269,21 +271,10 @@
                         radius: 12,
                     },
                     itemMargin: {
-                        horizontal: 10,
+                        horizontal: 5,
                         vertical: 5
                     }
                 },
-                responsive: [{
-                    breakpoint: 480,
-                    options: {
-                        chart: {
-                            width: 200
-                        },
-                        legend: {
-                            position: "bottom"
-                        }
-                    }
-                }]
             }
         }
 
