@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Daftar Hadir - My Attendance</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .active-nav {
+            color: #3B82F6;
+            position: relative;
+        }
+
+        .active-nav::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 6px;
+            background-color: #3B82F6;
+            border-radius: 50%;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #1D4F86 0%, #3B82F6 100%);
+        }
+
+        .shadow-soft {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-present {
+            background-color: #D1FAE5;
+            color: #065F46;
+        }
+
+        .status-absent {
+            background-color: #FEE2E2;
+            color: #B91C1C;
+        }
+
+        .status-leave {
+            background-color: #DBEAFE;
+            color: #1E40AF;
+        }
+
+        .scrollable-table {
+            max-height: calc(100vh - 250px);
+            overflow-y: auto;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <div class="max-w-md mx-auto bg-white min-h-screen flex flex-col font-sans relative overflow-hidden">
+
+        <!-- HEADER -->
+        <div class="gradient-bg w-full py-4 px-6 text-white relative overflow-hidden">
+            <div class="absolute -right-10 -top-10 w-40 h-40 bg-white bg-opacity-10 rounded-full"></div>
+            <div class="absolute -right-20 top-20 w-60 h-60 bg-white bg-opacity-5 rounded-full"></div>
+
+            <div class="flex justify-between items-center relative z-10">
+                <div>
+                    <h1 class="text-xl font-semibold">Daftar Hadir</h1>
+                    <p class="text-sm opacity-90">Kamis, 17 Juli 2025</p>
+                </div>
+                <div class="w-12 h-12 rounded-full bg-white bg-opacity-20 flex items-center justify-center">
+                    <i class="fas fa-calendar-alt text-xl text-white"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div class="flex-1 px-6 py-4 -mt-6 relative z-20">
+            <!-- Search Box -->
+            <div class="bg-white rounded-xl shadow-soft p-4 mb-3">
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-search text-gray-400"></i>
+                    </div>
+                    <input type="text" id="searchInput" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500" placeholder="Cari nama guru...">
+                </div>
+            </div>
+
+            <!-- Filter and Table Container -->
+            <div class="bg-white rounded-xl shadow-soft overflow-hidden">
+                <!-- Fixed Filter Tabs -->
+                <div class="sticky top-0 z-10 bg-white">
+                    <div class="flex bg-gray-50 px-4 border-b">
+                        <button class="filter-btn flex-1 py-3 text-sm font-medium text-center border-b-2 border-blue-500 text-blue-600 flex flex-col items-center" data-filter="all">
+                            <span>Semua</span>
+                            <span class="mt-1 bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded-full">6</span>
+                        </button>
+                        <button class="filter-btn flex-1 py-3 text-sm font-medium text-center text-gray-500 hover:text-gray-700 flex flex-col items-center" data-filter="absent">
+                            <span>Belum</span>
+                            <span class="mt-1 bg-gray-200 text-gray-800 text-xs px-2 py-0.5 rounded-full">1</span>
+                        </button>
+                        <button class="filter-btn flex-1 py-3 text-sm font-medium text-center text-gray-500 hover:text-gray-700 flex flex-col items-center" data-filter="present">
+                            <span>Hadir</span>
+                            <span class="mt-1 bg-gray-200 text-gray-800 text-xs px-2 py-0.5 rounded-full">4</span>
+                        </button>
+                        <button class="filter-btn flex-1 py-3 text-sm font-medium text-center text-gray-500 hover:text-gray-700 flex flex-col items-center" data-filter="leave">
+                            <span>Izin</span>
+                            <span class="mt-1 bg-gray-200 text-gray-800 text-xs px-2 py-0.5 rounded-full">1</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Scrollable Table -->
+                <div class="scrollable-table">
+                    <div class="grid grid-cols-1 gap-1 p-3">
+                        <!-- Teacher Card 1 -->
+                        <div class="teacher-card flex items-center p-3 hover:bg-gray-50 border rounded-xl" data-status="present" data-name="muhammad ariel">
+                            <div class="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center mr-2 flex-shrink-0">
+                                <span class="text-green-600 text-xs font-medium">MA</span>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-gray-900 truncate">Muhammad Ariel</p>
+                            </div>
+                            <div class="ml-2">
+                                <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">Hadir</span>
+                            </div>
+                        </div>
+
+                        <!-- Absent Card -->
+                        <div class="teacher-card flex items-center p-3 hover:bg-gray-50 border rounded-xl" data-status="absent" data-name="ridho ramadhan">
+                            <div class="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center mr-2 flex-shrink-0">
+                                <span class="text-red-600 text-xs font-medium">RR</span>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-gray-900 truncate">Ridho Ramadhan</p>
+                            </div>
+                            <div class="ml-2">
+                                <span class="text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">Belum</span>
+                            </div>
+                        </div>
+
+                        <!-- Leave Card -->
+                        <div class="teacher-card flex items-center p-3 hover:bg-gray-50 border rounded-xl" data-status="leave" data-name="timothy galih">
+                            <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center mr-2 flex-shrink-0">
+                                <span class="text-blue-600 text-xs font-medium">TS</span>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-gray-900 truncate">Timothy Galih</p>
+                            </div>
+                            <div class="ml-2">
+                                <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">Izin</span>
+                            </div>
+                        </div>
+
+                        <!-- More cards... -->
+                        <div class="teacher-card flex items-center p-3 hover:bg-gray-50 border rounded-xl" data-status="present" data-name="akhmad alvan">
+                            <div class="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center mr-2 flex-shrink-0">
+                                <span class="text-green-600 text-xs font-medium">AA</span>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-gray-900 truncate">Akhmad Alvan</p>
+                            </div>
+                            <div class="ml-2">
+                                <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">Hadir</span>
+                            </div>
+                        </div>
+
+                        <div class="teacher-card flex items-center p-3 hover:bg-gray-50 border rounded-xl" data-status="present" data-name="arya satya">
+                            <div class="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center mr-2 flex-shrink-0">
+                                <span class="text-green-600 text-xs font-medium">AS</span>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-gray-900 truncate">Arya Satya</p>
+                            </div>
+                            <div class="ml-2">
+                                <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">Hadir</span>
+                            </div>
+                        </div>
+
+                        <div class="teacher-card flex items-center p-3 hover:bg-gray-50 border rounded-xl" data-status="leave" data-name="diana putri">
+                            <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center mr-2 flex-shrink-0">
+                                <span class="text-blue-600 text-xs font-medium">DP</span>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-gray-900 truncate">Diana Putri</p>
+                            </div>
+                            <div class="ml-2">
+                                <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">Izin</span>
+                            </div>
+                        </div>
+
+                        <div class="teacher-card flex items-center p-3 hover:bg-gray-50 border rounded-xl" data-status="present" data-name="arya satya">
+                            <div class="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center mr-2 flex-shrink-0">
+                                <span class="text-green-600 text-xs font-medium">AS</span>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-gray-900 truncate">Arya Satya</p>
+                            </div>
+                            <div class="ml-2">
+                                <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">Hadir</span>
+                            </div>
+                        </div>
+
+                        <div class="teacher-card flex items-center p-3 hover:bg-gray-50 border rounded-xl" data-status="leave" data-name="diana putri">
+                            <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center mr-2 flex-shrink-0">
+                                <span class="text-blue-600 text-xs font-medium">DP</span>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-gray-900 truncate">Diana Putri</p>
+                            </div>
+                            <div class="ml-2">
+                                <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">Izin</span>
+                            </div>
+                        </div>
+
+                        <div class="teacher-card flex items-center p-3 hover:bg-gray-50 border rounded-xl" data-status="present" data-name="arya satya">
+                            <div class="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center mr-2 flex-shrink-0">
+                                <span class="text-green-600 text-xs font-medium">AS</span>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-gray-900 truncate">Arya Satya</p>
+                            </div>
+                            <div class="ml-2">
+                                <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">Hadir</span>
+                            </div>
+                        </div>
+
+                        <div class="teacher-card flex items-center p-3 hover:bg-gray-50 border rounded-xl" data-status="leave" data-name="diana putri">
+                            <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center mr-2 flex-shrink-0">
+                                <span class="text-blue-600 text-xs font-medium">DP</span>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-gray-900 truncate">Diana Putri</p>
+                            </div>
+                            <div class="ml-2">
+                                <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">Izin</span>
+                            </div>
+                        </div>
+
+                        <div class="teacher-card flex items-center p-3 hover:bg-gray-50 border rounded-xl" data-status="present" data-name="arya satya">
+                            <div class="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center mr-2 flex-shrink-0">
+                                <span class="text-green-600 text-xs font-medium">AS</span>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-gray-900 truncate">Arya Satya</p>
+                            </div>
+                            <div class="ml-2">
+                                <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">Hadir</span>
+                            </div>
+                        </div>
+
+                        <div class="teacher-card flex items-center p-3 hover:bg-gray-50 border rounded-xl" data-status="leave" data-name="diana putri">
+                            <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center mr-2 flex-shrink-0">
+                                <span class="text-blue-600 text-xs font-medium">DP</span>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-gray-900 truncate">Diana Putri</p>
+                            </div>
+                            <div class="ml-2">
+                                <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">Izin</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOTTOM NAVBAR -->
+        <div class="fixed max-w-md mx-auto bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-100 z-50 py-2">
+            <nav class="flex justify-around">
+                <a href="referensi.html" class="flex flex-col items-center py-1 px-2 text-xs text-gray-500">
+                    <i class="fas fa-home text-xl mb-1"></i>
+                    <span>Beranda</span>
+                </a>
+                <a href="daftar_hadir.html" class="flex flex-col items-center py-1 px-2 text-xs active-nav">
+                    <i class="fas fa-clipboard-list text-xl mb-1"></i>
+                    <span>Daftar Hadir</span>
+                </a>
+                <a href="#" class="flex flex-col items-center py-1 px-2 text-xs text-gray-500">
+                    <i class="fas fa-calendar-check text-xl mb-1"></i>
+                    <span>Absen Saya</span>
+                </a>
+                <a href="#" class="flex flex-col items-center py-1 px-2 text-xs text-gray-500">
+                    <i class="fas fa-file-alt text-xl mb-1"></i>
+                    <span>Izin & Cuti</span>
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <script>
+        // Nav active state
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', function (e) {
+                document.querySelectorAll('nav a').forEach(nav => {
+                    nav.classList.remove('active-nav');
+                    nav.classList.remove('text-blue-600');
+                    nav.classList.add('text-gray-500');
+                });
+                this.classList.add('active-nav', 'text-blue-600');
+                this.classList.remove('text-gray-500');
+            });
+        });
+
+        // Filter functionality
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const teacherCards = document.querySelectorAll('.teacher-card');
+        
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Update active filter button
+                filterButtons.forEach(btn => {
+                    btn.classList.remove('border-b-2', 'border-blue-500', 'text-blue-600');
+                    btn.classList.add('text-gray-500');
+                });
+                this.classList.add('border-b-2', 'border-blue-500', 'text-blue-600');
+                this.classList.remove('text-gray-500');
+                
+                // Filter cards
+                const filter = this.dataset.filter;
+                teacherCards.forEach(card => {
+                    if (filter === 'all' || card.dataset.status === filter) {
+                        card.style.display = 'flex';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            
+            teacherCards.forEach(card => {
+                const name = card.dataset.name.toLowerCase();
+                if (name.includes(searchTerm)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
